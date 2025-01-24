@@ -5,13 +5,13 @@
  - Work on Windows, Microsoft Speech install required.
  - Used TTS engine: Hanhan(zh-TW), Zira(en-US), Haruka(ja-JP)
  ### Install TTS engine:
- -- Right-bottom of windows taskbar, keyboard language switch button.
-   Language preference
-   Speech
-   Add voices
-   --> Chinese (Traditional, Taiwan), English (United States), Japanese
-   --> Add
-   Wait for download and installations.
+ - Right-bottom of windows taskbar, keyboard language switch button.
+ - Language preference
+ - Speech
+ - Add voices
+ -  --> Chinese (Traditional, Taiwan), English (United States), Japanese
+ -  --> Add
+ - Wait for download and installations.
 ## YT_ChatReading_bot_vGoogle
  - Google version, speek by gTTS.
  - Internet required.
