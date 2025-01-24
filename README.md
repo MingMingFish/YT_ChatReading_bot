@@ -20,3 +20,6 @@
 ## YT_ChatReading_bot_v2
  - I was trying to use pytchat.LiveChatAsync() , but it didn't work and I gaveup.
  - Just ignore it.
+
+# Known issue
+ - Bot stuck in a weird loop while chat runs too fast by unknown reason.
