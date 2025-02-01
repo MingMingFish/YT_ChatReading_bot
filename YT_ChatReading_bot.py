@@ -1,6 +1,5 @@
 import pyttsx3 # pip install pyttsx3
 import pytchat # pip install pytchat
-import time
 
 # Initialize tts engine
 tts_engine = pyttsx3.init()
@@ -72,10 +71,17 @@ def enter_vid():
         if 'https://' in enter:
             if 'youtube.com' in enter:
                 if 'v=' in enter:
-                    video_id = enter.split('v=')[1]
                     id_available = True
+                    video_id = enter.split('v=')[1]
+                elif '/live/' in enter:
+                    id_available = True
+                    video_id = enter.split('/live/')[1]
+                    if '?' in video_id:
+                        video_id = video_id.split('?')[0]
                 else:
                     print('Invalid YouTube URL: Please enter a live-stream URL.')
+                if '&' in video_id:
+                    video_id = video_id.split('&')[0]
             else:
                 print('Invalid URL: Please enter a YouTube video URL.')
         elif len(enter) == 11:
