@@ -22,4 +22,4 @@
  - Just ignore it.
 
 # Known issue
- - Bot stuck in a weird loop while chat runs too fast by unknown reason.
+ - Bot stuck in a weird loop while chat runs too fast by unknown reason. (probably because too long waiting time for web response)

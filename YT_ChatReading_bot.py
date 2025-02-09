@@ -47,8 +47,8 @@ def is_japanese(string):
 
 def detect_language(text):
     if   is_english(text) and not language==english:
-        return english
-        # return chinese # cancel English mode temporarily
+        # return english
+        return chinese # cancel English mode temporarily
     elif is_japanese(text) and not language==japanese:
         return japanese
     elif is_chinese(text) and not language==chinese:
@@ -94,7 +94,7 @@ def enter_vid():
     return video_id
 
 def main():
-    global language
+    global language, english, chinese, japanese
     continue_program = True
     video_id = enter_vid()
     print(f'Video ID: {video_id}')
@@ -109,7 +109,8 @@ def main():
     try:
         while continue_program:
             chat_room = pytchat.create(video_id=video_id)
-            
+            print("Chat connected successfully.")
+
             while chat_room.is_alive():
                 for chat_comment in chat_room.get().sync_items():
                     print(f"{chat_comment.datetime} [{chat_comment.author.name}]說: {chat_comment.message}")

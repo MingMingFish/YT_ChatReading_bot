@@ -3,6 +3,7 @@ import pytchat        # pip install pytchat
 from io import BytesIO
 import pygame
 import time
+import httpx
 
 # Initialize Pygame mixer
 pygame.mixer.init()
@@ -58,10 +59,17 @@ def enter_vid():
         if 'https://' in enter:
             if 'youtube.com' in enter:
                 if 'v=' in enter:
-                    video_id = enter.split('v=')[1]
                     id_available = True
+                    video_id = enter.split('v=')[1]
+                elif '/live/' in enter:
+                    id_available = True
+                    video_id = enter.split('/live/')[1]
+                    if '?' in video_id:
+                        video_id = video_id.split('?')[0]
                 else:
                     print('Invalid YouTube URL: Please enter a live-stream URL.')
+                if '&' in video_id:
+                    video_id = video_id.split('&')[0]
             else:
                 print('Invalid URL: Please enter a YouTube video URL.')
         elif len(enter) == 11:
@@ -72,6 +80,8 @@ def enter_vid():
     return video_id
 
 def main():
+    global language, english, chinese, japanese
+    continue_program = True
     video_id = enter_vid()
     print(f'Video ID: {video_id}')
 
@@ -83,19 +93,42 @@ def main():
         says_word = 'says: '
 
     try:
-        chat_room = pytchat.create(video_id=video_id)
-        while chat_room.is_alive():
-            for chat_comment in chat_room.get().sync_items():
-                print(f"{chat_comment.datetime} [{chat_comment.author.name}]: {chat_comment.message}")
-                # text = f'{chat_comment.author.name}說: {chat_comment.message}'
-                detect_language(chat_comment.author.name)
-                speak_text(chat_comment.author.name, language)
-                detect_language(says_word)
-                speak_text(says_word, language)
-                detect_language(chat_comment.message)
-                speak_text(chat_comment.message, language)
-
-        chat_room.terminate()
+        while continue_program:
+            chat_room = pytchat.create(video_id=video_id)
+            print("Chat connected successfully.")
+            while chat_room.is_alive():
+                for chat_comment in chat_room.get().sync_items():
+                    print(f"{chat_comment.datetime} [{chat_comment.author.name}]: {chat_comment.message}")
+                    # text = f'{chat_comment.author.name}說: {chat_comment.message}'
+                    detect_language(chat_comment.author.name)
+                    speak_text(chat_comment.author.name, language)
+                    detect_language(says_word)
+                    speak_text(says_word, language)
+                    detect_language(chat_comment.message)
+                    speak_text(chat_comment.message, language)
+            try:
+                chat_room.raise_for_status()
+                continue_program = False
+            except httpx.LocalProtocolError as error:
+                print(f"httpx.LocalProtocolError: {error}")
+                print("Reconnecting Live Chat...")
+                chat_room.terminate()
+                continue_program = True
+            except pytchat.exceptions.NoContents as error:
+                print(f"pytchat.exceptions.NoContents: {error}")
+                print("Live stream has ended.")
+                chat_room.terminate()
+                continue_program = False
+                break
+            except KeyboardInterrupt:
+                chat_room.terminate()
+                continue_program = False
+                print("Keyboard Interrupted.")
+                break
+            # except Exception as error:
+            #     print(f"Error: {error}")
+            #     break
+            chat_room.terminate()
         print("Chat connection ended.")
 
     except pytchat.exceptions.InvalidVideoIdException:
