@@ -13,12 +13,12 @@
  -  --> Add
  - Wait for download and installations.
 ## YT_ChatReading_bot_vGoogle
- - Google version, speek by gTTS.
+ - Google version, speak by gTTS.
  - Internet required.
  - Supported language: zh-TW, en, ja
  - Might update to support other languages after days.
-## YT_ChatReading_bot_v2
- - I was trying to use pytchat.LiveChatAsync() , but it didn't work and I gaveup.
+## YT_ChatReading_bot_vAsync
+ - I was trying to use pytchat.LiveChatAsync() , but it didn't work and I gave up.
  - Just ignore it.
 
 # Known issue
