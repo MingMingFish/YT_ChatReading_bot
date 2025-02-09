@@ -1,6 +1,6 @@
 # YT_ChatReading_bot
  YT LiveChat TTS
- Enter a YouTube Live stream ID or URL, it speeks out the chat comment and the commenter.
+ Enter a YouTube Live stream ID or URL, it speaks out the chat comment and the commenter.
 ## YT_ChatReading_bot
  - Work on Windows, Microsoft Speech install required.
  - Used TTS engine: Hanhan(zh-TW), Zira(en-US), Haruka(ja-JP)
