@@ -104,7 +104,7 @@ def main():
     elif language == japanese:
         says_word = 'が: '
     else: 
-        says_word = 'says: '
+        says_word = ' says: '
 
     try:
         while continue_program:
@@ -113,7 +113,7 @@ def main():
 
             while chat_room.is_alive():
                 for chat_comment in chat_room.get().sync_items():
-                    print(f"{chat_comment.datetime} [{chat_comment.author.name}]說: {chat_comment.message}")
+                    print(f"{chat_comment.datetime} [{chat_comment.author.name}]{says_word}: {chat_comment.message}")
 
                     detected_lang = detect_language(chat_comment.author.name)
                     if detected_lang != language:
