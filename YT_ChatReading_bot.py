@@ -1,5 +1,6 @@
 import pyttsx3 # pip install pyttsx3
 import pytchat # pip install pytchat
+import httpx
 
 # Initialize tts engine
 tts_engine = pyttsx3.init()
@@ -47,6 +48,7 @@ def is_japanese(string):
 def detect_language(text):
     if   is_english(text) and not language==english:
         return english
+        # return chinese # cancel English mode temporarily
     elif is_japanese(text) and not language==japanese:
         return japanese
     elif is_chinese(text) and not language==chinese:
@@ -93,6 +95,7 @@ def enter_vid():
 
 def main():
     global language
+    continue_program = True
     video_id = enter_vid()
     print(f'Video ID: {video_id}')
     
@@ -104,30 +107,53 @@ def main():
         says_word = 'says: '
 
     try:
-        chat_room = pytchat.create(video_id=video_id)
-        while chat_room.is_alive():
-            for chat_comment in chat_room.get().sync_items():
-                print(f"{chat_comment.datetime} [{chat_comment.author.name}]說: {chat_comment.message}")
+        while continue_program:
+            chat_room = pytchat.create(video_id=video_id)
+            
+            while chat_room.is_alive():
+                for chat_comment in chat_room.get().sync_items():
+                    print(f"{chat_comment.datetime} [{chat_comment.author.name}]說: {chat_comment.message}")
 
-                detected_lang = detect_language(chat_comment.author.name)
-                if detected_lang != language:
-                    language = detected_lang
-                    set_language(tts_engine, language)
-                speak_text(chat_comment.author.name)
+                    detected_lang = detect_language(chat_comment.author.name)
+                    if detected_lang != language:
+                        language = detected_lang
+                        set_language(tts_engine, language)
+                    speak_text(chat_comment.author.name)
 
-                detected_lang = detect_language(says_word)
-                if detected_lang != language:
-                    language = detected_lang
-                    set_language(tts_engine, language)
-                speak_text(says_word)
+                    detected_lang = detect_language(says_word)
+                    if detected_lang != language:
+                        language = detected_lang
+                        set_language(tts_engine, language)
+                    speak_text(says_word)
 
-                detected_lang = detect_language(chat_comment.message)
-                if detected_lang != language:
-                    language = detected_lang
-                    set_language(tts_engine, language)
-                speak_text(chat_comment.message)
-
-        chat_room.terminate()
+                    detected_lang = detect_language(chat_comment.message)
+                    if detected_lang != language:
+                        language = detected_lang
+                        set_language(tts_engine, language)
+                    speak_text(chat_comment.message)
+            try:
+                chat_room.raise_for_status()
+                continue_program = False
+            except httpx.LocalProtocolError as error:
+                print(f"httpx.LocalProtocolError: {error}")
+                print("Reconnecting Live Chat...")
+                chat_room.terminate()
+                continue_program = True
+            except pytchat.exceptions.NoContents as error:
+                print(f"pytchat.exceptions.NoContents: {error}")
+                print("Live stream has ended.")
+                chat_room.terminate()
+                continue_program = False
+                break
+            except KeyboardInterrupt:
+                chat_room.terminate()
+                continue_program = False
+                print("Keyboard Interrupted.")
+                break
+            # except Exception as error:
+            #     print(f"Error: {error}")
+            #     break
+            chat_room.terminate()
         print("Chat connection ended.")
 
     except pytchat.exceptions.InvalidVideoIdException:
