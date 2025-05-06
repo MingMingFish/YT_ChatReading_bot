@@ -1,7 +1,7 @@
 from gtts import gTTS # pip install gTTS
 import pytchat        # pip install pytchat
 from io import BytesIO
-import pygame
+import pygame.mixer
 import time
 import httpx
 
